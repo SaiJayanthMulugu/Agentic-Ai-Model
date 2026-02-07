@@ -353,18 +353,3 @@ response = orchestrator.process_request(
 ## 🐛 Troubleshooting
 
 See [Troubleshooting Guide](docs/troubleshooting.md) for common issues.
-
-## 📄 License
-
-[Your License Here]
-
-## 👥 Contributing
-
-[Contributing Guidelines]
-
-## 📞 Support
-
-[Support Contact Information]
-
-#   A g e n t i c - A i - M o d e l  
- 
