@@ -1,0 +1,25 @@
+{
+  "name": "mas-rag-learning-job",
+  "description": "Process pending feedback for RAG learning",
+  "schedule": {
+    "quartz_cron_expression": "0 */30 * * * ?",
+    "timezone_id": "UTC",
+    "pause_status": "UNPAUSED"
+  },
+  "max_concurrent_runs": 1,
+  "tasks": [
+    {
+      "task_key": "rag_learning_task",
+      "description": "Process feedback and update knowledge base",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Repos/aiops-agentic-mas-platform/notebooks/09_rag_system/03_learning_pipeline",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 3600,
+      "max_retries": 2
+    }
+  ],
+  "timeout_seconds": 3600,
+  "format": "MULTI_TASK"
+}
+

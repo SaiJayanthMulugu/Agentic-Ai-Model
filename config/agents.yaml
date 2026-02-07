@@ -1,0 +1,96 @@
+agents:
+  OrchestratorAgent:
+    enabled: true
+    priority: 0
+    max_concurrent_tasks: 10
+    timeout_seconds: 300
+    retry_count: 3
+    requires_approval: false
+    
+  RAGAgent:
+    enabled: true
+    priority: 1
+    max_concurrent_tasks: 20
+    timeout_seconds: 60
+    retry_count: 2
+    requires_approval: false
+    vector_search:
+      top_k: 5
+      similarity_threshold: 0.7
+      
+  CodeAgent:
+    enabled: true
+    priority: 2
+    max_concurrent_tasks: 15
+    timeout_seconds: 120
+    retry_count: 2
+    requires_approval: false
+    code_validation: true
+    
+  TestCaseAgent:
+    enabled: true
+    priority: 3
+    max_concurrent_tasks: 10
+    timeout_seconds: 90
+    retry_count: 2
+    requires_approval: false
+    
+  PowerBIAgent:
+    enabled: true
+    priority: 4
+    max_concurrent_tasks: 10
+    timeout_seconds: 120
+    retry_count: 2
+    requires_approval: false
+    
+  ExecutionAgent:
+    enabled: true
+    priority: 5
+    max_concurrent_tasks: 5
+    timeout_seconds: 600
+    retry_count: 1
+    requires_approval: true
+    dangerous: true
+    dry_run_first: true
+    
+  FeedbackAgent:
+    enabled: true
+    priority: 6
+    max_concurrent_tasks: 50
+    timeout_seconds: 30
+    retry_count: 3
+    requires_approval: false
+    
+  OptimizerAgent:
+    enabled: true
+    priority: 7
+    max_concurrent_tasks: 5
+    timeout_seconds: 300
+    retry_count: 2
+    requires_approval: false
+    
+  GovernanceAgent:
+    enabled: true
+    priority: 8
+    max_concurrent_tasks: 20
+    timeout_seconds: 60
+    retry_count: 1
+    requires_approval: false
+    approval_timeout_seconds: 3600
+    
+  PromptOpsAgent:
+    enabled: true
+    priority: 9
+    max_concurrent_tasks: 10
+    timeout_seconds: 60
+    retry_count: 2
+    requires_approval: false
+    
+  LLMOpsAgent:
+    enabled: true
+    priority: 10
+    max_concurrent_tasks: 10
+    timeout_seconds: 60
+    retry_count: 2
+    requires_approval: false
+

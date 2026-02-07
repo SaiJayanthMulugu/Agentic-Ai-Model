@@ -1,0 +1,56 @@
+rag:
+  system_name: "Self-Learning RAG System"
+  version: "1.0.0"
+  
+  vector_search:
+    endpoint: ${VECTOR_ENDPOINT:-rag-vector-endpoint}
+    index: ${VECTOR_INDEX:-knowledge_base_index}
+    embedding_model: ${EMBEDDING_ENDPOINT:-databricks-gte-large-en}
+    top_k: ${RAG_TOP_K:-5}
+    similarity_threshold: ${RAG_SIMILARITY_THRESHOLD:-0.7}
+    
+  llm:
+    endpoint: ${LLM_ENDPOINT:-databricks-meta-llama-3-1-70b-instruct}
+    temperature: 0.7
+    max_tokens: 2000
+    top_p: 0.9
+    
+  knowledge_base:
+    catalog: ${CATALOG_NAME:-main}
+    schema: ${SCHEMA_NAME:-mas_system}
+    table: knowledge_base
+    categories:
+      - documentation
+      - code_examples
+      - best_practices
+      - troubleshooting
+      - data_dictionary
+      - business_rules
+      
+  learning:
+    enabled: ${ENABLE_SELF_LEARNING:-true}
+    query_logging: true
+    feedback_collection: true
+    knowledge_gap_detection: true
+    auto_document_generation: true
+    human_in_the_loop: true
+    
+  retraining:
+    triggers:
+      approved_documents_threshold: ${RAG_RETRAINING_THRESHOLD_DOCS:-10}
+      feedback_threshold: ${RAG_RETRAINING_THRESHOLD_FEEDBACK:-20}
+      scheduled: true
+      schedule_cron: "0 0 * * 0"  # Weekly on Sunday
+      
+  approval_workflow:
+    enabled: true
+    auto_approve_confidence: 0.95
+    require_human_review: true
+    timeout_hours: 24
+    
+  quality_control:
+    min_quality_score: 0.7
+    content_validation: true
+    duplicate_detection: true
+    relevance_check: true
+
