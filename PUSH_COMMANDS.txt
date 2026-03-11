@@ -1,0 +1,13 @@
+# Commands to Push to GitHub
+# Copy and paste these commands one by one
+
+# Step 1: Add GitHub remote (replace with your actual repo URL if different)
+git remote add origin https://github.com/SaiJayanthMulugu/aiops-agentic-mas-platform.git
+
+# Step 2: Push to GitHub
+git push -u origin main
+
+# If you get "remote origin already exists" error, run this first:
+# git remote remove origin
+# Then run the add command again
+

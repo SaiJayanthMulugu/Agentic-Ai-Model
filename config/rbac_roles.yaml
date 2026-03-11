@@ -1,0 +1,125 @@
+roles:
+  admin:
+    name: "Administrator"
+    description: "Full system access"
+    permissions:
+      - all
+    restrictions: []
+    
+  data_engineer:
+    name: "Data Engineer"
+    description: "Can read knowledge, generate code, and execute SQL"
+    permissions:
+      - read_knowledge
+      - query_rag
+      - generate_code
+      - execute_sql
+      - execute_pyspark
+      - generate_tests
+      - view_metrics
+    restrictions:
+      - no_delete
+      - no_promote
+      - no_approve_others
+      
+  data_analyst:
+    name: "Data Analyst"
+    description: "Can read knowledge and query RAG, but cannot execute code"
+    permissions:
+      - read_knowledge
+      - query_rag
+      - view_metrics
+      - provide_feedback
+    restrictions:
+      - no_execute
+      - no_code_gen
+      - no_approve
+      
+  knowledge_curator:
+    name: "Knowledge Curator"
+    description: "Can approve documents and manage knowledge base"
+    permissions:
+      - read_knowledge
+      - query_rag
+      - approve_docs
+      - manage_knowledge
+      - view_metrics
+      - approve_retraining
+    restrictions:
+      - no_execute
+      - no_code_gen
+      
+  governance_officer:
+    name: "Governance Officer"
+    description: "Can approve workflows and manage RBAC"
+    permissions:
+      - read_knowledge
+      - query_rag
+      - approve_execution
+      - approve_retraining
+      - manage_rbac
+      - view_audit_logs
+      - view_metrics
+    restrictions:
+      - no_execute
+      - no_code_gen
+      
+  viewer:
+    name: "Viewer"
+    description: "Read-only access"
+    permissions:
+      - read_knowledge
+      - query_rag
+      - view_metrics
+    restrictions:
+      - no_execute
+      - no_code_gen
+      - no_approve
+      - no_modify
+
+permission_definitions:
+  all:
+    description: "All permissions"
+    
+  read_knowledge:
+    description: "Read from knowledge base"
+    
+  query_rag:
+    description: "Query RAG system"
+    
+  generate_code:
+    description: "Generate SQL/PySpark/Python code"
+    
+  execute_sql:
+    description: "Execute SQL queries"
+    
+  execute_pyspark:
+    description: "Execute PySpark code"
+    
+  generate_tests:
+    description: "Generate test cases"
+    
+  approve_docs:
+    description: "Approve knowledge base documents"
+    
+  manage_knowledge:
+    description: "Manage knowledge base (add, update, delete)"
+    
+  approve_execution:
+    description: "Approve code execution requests"
+    
+  approve_retraining:
+    description: "Approve model retraining requests"
+    
+  manage_rbac:
+    description: "Manage RBAC roles and permissions"
+    
+  view_audit_logs:
+    description: "View audit logs"
+    
+  view_metrics:
+    description: "View system metrics and dashboards"
+    
+  provide_feedback:
+    description: "Provide feedback on agent responses"
+

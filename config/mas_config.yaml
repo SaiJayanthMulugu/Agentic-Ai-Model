@@ -1,0 +1,64 @@
+mas:
+  name: "AIOps Agentic MAS Platform"
+  version: "1.0.0"
+  
+  planning:
+    default_strategy: "react"  # react, tot, chain_of_thought
+    max_iterations: 10
+    backtrack_enabled: true
+    
+  execution_plans:
+    powerbi_validation:
+      name: "Power BI Validation Workflow"
+      agents: [RAGAgent, PowerBIAgent, TestCaseAgent]
+      strategy: sequential
+      timeout_seconds: 300
+      
+    sql_generation:
+      name: "SQL Generation Workflow"
+      agents: [RAGAgent, CodeAgent, TestCaseAgent]
+      strategy: sequential
+      timeout_seconds: 180
+      
+    code_execution:
+      name: "Code Execution Workflow"
+      agents: [RAGAgent, CodeAgent, GovernanceAgent, ExecutionAgent, FeedbackAgent]
+      strategy: sequential_with_approval
+      timeout_seconds: 600
+      requires_approval: true
+      
+    knowledge_query:
+      name: "Knowledge Query Workflow"
+      agents: [RAGAgent]
+      strategy: direct
+      timeout_seconds: 60
+      
+    test_generation:
+      name: "Test Generation Workflow"
+      agents: [RAGAgent, CodeAgent, TestCaseAgent]
+      strategy: sequential
+      timeout_seconds: 180
+      
+    self_learning:
+      name: "Self-Learning Workflow"
+      agents: [OptimizerAgent, GovernanceAgent, RAGAgent]
+      strategy: sequential_with_approval
+      timeout_seconds: 600
+      requires_approval: true
+
+  message_bus:
+    table_name: "agent_messages"
+    poll_interval_seconds: 1
+    message_ttl_hours: 24
+    max_message_size_kb: 1024
+    
+  shared_memory:
+    table_name: "agent_shared_memory"
+    ttl_hours: 24
+    max_value_size_kb: 512
+    
+  event_system:
+    table_name: "agent_events"
+    event_ttl_hours: 168  # 7 days
+    subscription_enabled: true
+

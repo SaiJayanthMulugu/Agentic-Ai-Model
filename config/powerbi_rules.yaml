@@ -1,0 +1,40 @@
+powerbi:
+  validation_rules:
+    sql_reconciliation:
+      enabled: true
+      strict_mode: false
+      check_types: true
+      check_nullability: true
+      
+    dax_validation:
+      enabled: true
+      syntax_check: true
+      performance_check: true
+      best_practices_check: true
+      
+    semantic_model:
+      enabled: true
+      check_relationships: true
+      check_measures: true
+      check_calculated_columns: true
+      
+    data_lineage:
+      enabled: true
+      trace_source: true
+      trace_destination: true
+      validate_transformations: true
+      
+  dax_best_practices:
+    - avoid_calculated_columns_in_large_tables
+    - use_measures_for_aggregations
+    - optimize_filter_context
+    - avoid_circular_dependencies
+    - use_variables_for_complex_calculations
+    
+  sql_reconciliation_checks:
+    - column_count_match
+    - data_type_compatibility
+    - null_handling_consistency
+    - aggregation_accuracy
+    - join_condition_validation
+
