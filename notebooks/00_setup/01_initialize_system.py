@@ -14,25 +14,33 @@
 import os
 from pathlib import Path
 
-# Get SQL files directory - derive from notebook path for reliable detection
-try:
-    notebook_path = dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
-    # notebook_path: /Workspace/Repos/user/repo-name/notebooks/00_setup/01_initialize_system
-    parts = [p for p in notebook_path.rstrip("/").split("/") if p]
-    if "Repos" in parts:
-        idx = parts.index("Repos")
-        repo_root = "/" + "/".join(parts[: idx + 3])  # /Workspace/Repos/user/repo-name
-        sql_dir = Path(repo_root) / "sql"
-    else:
-        username = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
-        sql_dir = Path("/Workspace/Repos") / username / "Agentic-Ai-Model" / "sql"
-except Exception:
-    sql_dir = Path("/Workspace/Repos/saijayanthmulugu@gmail.com/Agentic-Ai-Model/sql")
+# SQL directory: try multiple methods (edit MANUAL_SQL_DIR if needed)
+MANUAL_SQL_DIR = "/Workspace/Repos/saijayanthmulugu@gmail.com/Agentic-Ai-Model/sql"
 
-print(f"Using SQL directory: {sql_dir}")
-print(f"SQL directory exists: {sql_dir.exists()}")
-if sql_dir.exists():
-    print(f"SQL files found: {list(sql_dir.glob('*.sql'))}")
+candidates = [
+    Path(MANUAL_SQL_DIR),
+    (Path.cwd() / "sql").resolve(),           # cwd = repo root (Databricks Repos default)
+    (Path.cwd() / ".." / "sql").resolve(),    # cwd = notebooks/00_setup
+]
+sql_dir = None
+for c in candidates:
+    if c and c.exists():
+        sql_dir = c
+        break
+if sql_dir is None:
+    try:
+        notebook_path = dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
+        parts = [p for p in notebook_path.rstrip("/").split("/") if p]
+        if "Repos" in parts:
+            idx = parts.index("Repos")
+            repo_root = "/" + "/".join(parts[: idx + 3])
+            sql_dir = Path(repo_root) / "sql"
+    except Exception:
+        sql_dir = Path(MANUAL_SQL_DIR)
+
+print(f"SQL directory: {sql_dir}")
+print(f"Exists: {sql_dir.exists()}")
+print(f"Current working dir: {Path.cwd()}")
 
 # SQL files in order
 sql_files = [
