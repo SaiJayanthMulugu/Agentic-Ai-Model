@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS memory_access_log (
     accessed_by_agent STRING NOT NULL,
     access_type STRING NOT NULL,  -- read, write, delete
     accessed_at TIMESTAMP NOT NULL,
+    access_date DATE GENERATED ALWAYS AS (CAST(accessed_at AS DATE)),
     PRIMARY KEY (access_id)
 ) USING DELTA
-PARTITIONED BY (DATE(accessed_at));
+PARTITIONED BY (access_date);
 

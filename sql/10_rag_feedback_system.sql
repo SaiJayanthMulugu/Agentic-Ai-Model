@@ -14,11 +14,12 @@ CREATE TABLE IF NOT EXISTS rag_user_feedback (
     correction_text STRING,  -- If user provides corrected answer
     is_helpful BOOLEAN,
     feedback_timestamp TIMESTAMP NOT NULL,
+    feedback_date DATE GENERATED ALWAYS AS (CAST(feedback_timestamp AS DATE)),
     processed BOOLEAN DEFAULT false,
     processed_at TIMESTAMP,
     PRIMARY KEY (feedback_id)
 ) USING DELTA
-PARTITIONED BY (feedback_type, DATE(feedback_timestamp));
+PARTITIONED BY (feedback_type, feedback_date);
 
 -- Feedback Aggregation (for retraining triggers)
 CREATE TABLE IF NOT EXISTS rag_feedback_aggregation (

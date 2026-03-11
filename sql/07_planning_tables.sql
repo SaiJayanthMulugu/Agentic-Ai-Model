@@ -23,9 +23,10 @@ CREATE TABLE IF NOT EXISTS execution_plans (
     completed_at TIMESTAMP,
     created_by STRING,
     correlation_id STRING,  -- Track related requests
+    plan_date DATE GENERATED ALWAYS AS (CAST(created_at AS DATE)),
     PRIMARY KEY (plan_id)
 ) USING DELTA
-PARTITIONED BY (planning_strategy, DATE(created_at));
+PARTITIONED BY (planning_strategy, plan_date);
 
 -- Task Execution History
 CREATE TABLE IF NOT EXISTS task_execution_history (

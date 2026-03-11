@@ -36,9 +36,10 @@ CREATE TABLE IF NOT EXISTS agent_request_details (
     cost_usd FLOAT,
     error_message STRING,
     request_timestamp TIMESTAMP NOT NULL,
+    request_date DATE GENERATED ALWAYS AS (CAST(request_timestamp AS DATE)),
     PRIMARY KEY (request_id)
 ) USING DELTA
-PARTITIONED BY (agent_id, DATE(request_timestamp));
+PARTITIONED BY (agent_id, request_date);
 
 -- Cost Tracking
 CREATE TABLE IF NOT EXISTS agent_costs (
@@ -64,13 +65,14 @@ CREATE TABLE IF NOT EXISTS agent_alerts (
     alert_data MAP<STRING, STRING>,
     status STRING NOT NULL,  -- active, acknowledged, resolved, dismissed
     created_at TIMESTAMP NOT NULL,
+    alert_date DATE GENERATED ALWAYS AS (CAST(created_at AS DATE)),
     acknowledged_at TIMESTAMP,
     acknowledged_by STRING,
     resolved_at TIMESTAMP,
     resolved_by STRING,
     PRIMARY KEY (alert_id)
 ) USING DELTA
-PARTITIONED BY (alert_type, status, DATE(created_at));
+PARTITIONED BY (alert_type, status, alert_date);
 
 -- System Health Summary
 CREATE TABLE IF NOT EXISTS system_health_summary (

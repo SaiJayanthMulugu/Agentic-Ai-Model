@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS agent_messages (
     message_type STRING NOT NULL,  -- request, response, event, notification
     content STRING NOT NULL,  -- JSON string
     timestamp TIMESTAMP NOT NULL,
+    msg_date DATE GENERATED ALWAYS AS (CAST(timestamp AS DATE)),
     correlation_id STRING,  -- Track conversations
     priority INT DEFAULT 5,  -- 1-10, 10 is highest
     status STRING NOT NULL,  -- pending, delivered, processed, failed
@@ -18,7 +19,7 @@ CREATE TABLE IF NOT EXISTS agent_messages (
     error_message STRING,
     PRIMARY KEY (message_id)
 ) USING DELTA
-PARTITIONED BY (to_agent, message_type, DATE(timestamp))
+PARTITIONED BY (to_agent, message_type, msg_date)
 TBLPROPERTIES (
     'delta.autoOptimize.optimizeWrite' = 'true',
     'delta.autoOptimize.autoCompact' = 'true'
@@ -31,12 +32,13 @@ CREATE TABLE IF NOT EXISTS agent_events (
     source_agent STRING NOT NULL,
     event_data STRING NOT NULL,  -- JSON string
     timestamp TIMESTAMP NOT NULL,
+    event_date DATE GENERATED ALWAYS AS (CAST(timestamp AS DATE)),
     processed BOOLEAN DEFAULT false,
     processed_at TIMESTAMP,
     subscribers ARRAY<STRING>,  -- Agents subscribed to this event type
     PRIMARY KEY (event_id)
 ) USING DELTA
-PARTITIONED BY (event_type, DATE(timestamp));
+PARTITIONED BY (event_type, event_date);
 
 -- Event Subscriptions: Which agents subscribe to which events
 CREATE TABLE IF NOT EXISTS agent_event_subscriptions (

@@ -14,11 +14,12 @@ CREATE TABLE IF NOT EXISTS rag_query_logs (
     response_text STRING,
     response_quality_score FLOAT,
     query_timestamp TIMESTAMP NOT NULL,
+    query_date DATE GENERATED ALWAYS AS (CAST(query_timestamp AS DATE)),
     response_time_ms FLOAT,
     token_count INT,
     PRIMARY KEY (query_id)
 ) USING DELTA
-PARTITIONED BY (DATE(query_timestamp))
+PARTITIONED BY (query_date)
 TBLPROPERTIES (
     'delta.autoOptimize.optimizeWrite' = 'true',
     'delta.autoOptimize.autoCompact' = 'true'

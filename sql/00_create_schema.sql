@@ -1,8 +1,7 @@
 -- Create Schema for MAS System
 -- This script creates the Unity Catalog schema for the Multi-Agent System
 -- Idempotent: Safe to run multiple times
-
-CREATE CATALOG IF NOT EXISTS main;
+-- Note: Skip CREATE CATALOG if "main" already exists in your workspace
 
 USE CATALOG main;
 
@@ -11,7 +10,7 @@ COMMENT 'Multi-Agent System (MAS) platform schema for AIOps';
 
 USE SCHEMA mas_system;
 
--- Grant permissions
-GRANT USE SCHEMA ON SCHEMA mas_system TO `account users`;
-GRANT USE SCHEMA ON SCHEMA mas_system TO `workspace users`;
+-- Grant permissions (fully qualified schema for Unity Catalog)
+GRANT USE SCHEMA ON SCHEMA main.mas_system TO `account users`;
+GRANT USE SCHEMA ON SCHEMA main.mas_system TO `workspace users`;
 

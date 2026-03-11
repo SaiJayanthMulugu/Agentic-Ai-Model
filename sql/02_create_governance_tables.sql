@@ -66,9 +66,10 @@ CREATE TABLE IF NOT EXISTS audit_log (
     resource_id STRING,
     details MAP<STRING, STRING>,
     timestamp TIMESTAMP NOT NULL,
+    audit_date DATE GENERATED ALWAYS AS (CAST(timestamp AS DATE)),
     ip_address STRING,
     user_agent STRING,
     PRIMARY KEY (audit_id)
 ) USING DELTA
-PARTITIONED BY (event_type, DATE(timestamp));
+PARTITIONED BY (event_type, audit_date);
 

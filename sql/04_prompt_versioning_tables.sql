@@ -44,10 +44,11 @@ CREATE TABLE IF NOT EXISTS prompt_usage_log (
     agent_type STRING NOT NULL,
     request_id STRING,
     used_at TIMESTAMP NOT NULL,
+    use_date DATE GENERATED ALWAYS AS (CAST(used_at AS DATE)),
     success BOOLEAN,
     latency_ms FLOAT,
     token_count INT,
     PRIMARY KEY (usage_id)
 ) USING DELTA
-PARTITIONED BY (agent_type, DATE(used_at));
+PARTITIONED BY (agent_type, use_date);
 

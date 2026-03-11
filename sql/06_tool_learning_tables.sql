@@ -13,9 +13,10 @@ CREATE TABLE IF NOT EXISTS tool_usage_history (
     success BOOLEAN,
     execution_time_ms FLOAT,
     used_at TIMESTAMP NOT NULL,
+    use_date DATE GENERATED ALWAYS AS (CAST(used_at AS DATE)),
     PRIMARY KEY (usage_id)
 ) USING DELTA
-PARTITIONED BY (agent_id, DATE(used_at));
+PARTITIONED BY (agent_id, use_date);
 
 -- Tool Performance Metrics
 CREATE TABLE IF NOT EXISTS tool_performance_metrics (
