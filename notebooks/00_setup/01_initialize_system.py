@@ -146,9 +146,13 @@ tables = [
 for table in tables:
     try:
         count = spark.sql(f"SELECT COUNT(*) FROM main.mas_system.{table}").collect()[0][0]
-        print(f"✓ {table}: {count} records")
+        print(f"[OK] {table}: {count} records")
     except Exception as e:
-        print(f"✗ {table}: {e}")
+        err_msg = str(e).split("\n")[0] if "\n" in str(e) else str(e)
+        if "TABLE_OR_VIEW_NOT_FOUND" in str(e) or "cannot be found" in str(e):
+            print(f"[NOT FOUND] {table}: Table does not exist. Run 12_agent_communication.sql to create it.")
+        else:
+            print(f"[ERROR] {table}: {err_msg[:120]}...")
 
 # COMMAND ----------
 

@@ -8,18 +8,16 @@ CREATE TABLE IF NOT EXISTS agent_messages (
     message_id STRING NOT NULL,
     from_agent STRING NOT NULL,
     to_agent STRING NOT NULL,
-    message_type STRING NOT NULL,  -- request, response, event, notification
-    content STRING NOT NULL,  -- JSON string
+    message_type STRING NOT NULL,
+    content STRING NOT NULL,
     timestamp TIMESTAMP NOT NULL,
-    msg_date DATE GENERATED ALWAYS AS (CAST(timestamp AS DATE)),
-    correlation_id STRING,  -- Track conversations
-    priority INT DEFAULT 5,  -- 1-10, 10 is highest
-    status STRING NOT NULL,  -- pending, delivered, processed, failed
+    correlation_id STRING,
+    priority INT,
+    status STRING NOT NULL,
     processed_at TIMESTAMP,
-    error_message STRING,
-    PRIMARY KEY (message_id)
+    error_message STRING
 ) USING DELTA
-PARTITIONED BY (to_agent, message_type, msg_date)
+PARTITIONED BY (to_agent, message_type)
 TBLPROPERTIES (
     'delta.autoOptimize.optimizeWrite' = 'true',
     'delta.autoOptimize.autoCompact' = 'true'
@@ -28,17 +26,15 @@ TBLPROPERTIES (
 -- Event System: Event-driven communication
 CREATE TABLE IF NOT EXISTS agent_events (
     event_id STRING NOT NULL,
-    event_type STRING NOT NULL,  -- task_completed, approval_needed, retraining_requested, alert_triggered, knowledge_gap_detected
+    event_type STRING NOT NULL,
     source_agent STRING NOT NULL,
-    event_data STRING NOT NULL,  -- JSON string
+    event_data STRING NOT NULL,
     timestamp TIMESTAMP NOT NULL,
-    event_date DATE GENERATED ALWAYS AS (CAST(timestamp AS DATE)),
-    processed BOOLEAN DEFAULT false,
+    processed BOOLEAN,
     processed_at TIMESTAMP,
-    subscribers ARRAY<STRING>,  -- Agents subscribed to this event type
-    PRIMARY KEY (event_id)
+    subscribers ARRAY<STRING>
 ) USING DELTA
-PARTITIONED BY (event_type, event_date);
+PARTITIONED BY (event_type);
 
 -- Event Subscriptions: Which agents subscribe to which events
 CREATE TABLE IF NOT EXISTS agent_event_subscriptions (
