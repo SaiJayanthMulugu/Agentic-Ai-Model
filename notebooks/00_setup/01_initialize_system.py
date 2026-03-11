@@ -14,14 +14,22 @@
 import os
 from pathlib import Path
 
-# Get SQL files directory
-# Update this path to match your Databricks Repos path
-# Option 1: If using Databricks Repos
-sql_dir = Path("/Workspace/Repos") / dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get() / "aiops-agentic-mas-platform" / "sql"
-# Option 2: If uploaded to workspace files, use:
-# sql_dir = Path("/Workspace/aiops-agentic-mas-platform/sql")
-# Option 3: If you know the exact path:
-# sql_dir = Path("/Workspace/Repos/your-username/aiops-agentic-mas-platform/sql")
+# Get SQL files directory - update MANUAL_SQL_DIR if auto-detect fails
+try:
+    username = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
+    # Try Agentic-Ai-Model first (common repo name), then aiops-agentic-mas-platform
+    for repo in ["Agentic-Ai-Model", "aiops-agentic-mas-platform"]:
+        candidate = Path("/Workspace/Repos") / username / repo / "sql"
+        if candidate.exists():
+            sql_dir = candidate
+            break
+    else:
+        sql_dir = Path("/Workspace/Repos") / username / "Agentic-Ai-Model" / "sql"
+except Exception:
+    sql_dir = Path("/Workspace/Repos/your-username/Agentic-Ai-Model/sql")  # Update if needed
+
+print(f"Using SQL directory: {sql_dir}")
+print(f"SQL directory exists: {sql_dir.exists()}")
 
 # SQL files in order
 sql_files = [
@@ -43,20 +51,41 @@ sql_files = [
 
 # COMMAND ----------
 
-# Execute each SQL file
+def split_sql_statements(sql_content):
+    """Split SQL into individual statements. Spark.sql() accepts only one statement at a time."""
+    statements = []
+    for stmt in sql_content.split(';'):
+        stmt = stmt.strip()
+        if not stmt:
+            continue
+        # Skip comment-only blocks
+        if all(line.strip().startswith('--') or not line.strip() for line in stmt.split('\n')):
+            continue
+        statements.append(stmt)
+    return statements
+
+# COMMAND ----------
+
+# Execute each SQL file - run statements one at a time (Spark doesn't support multi-statement)
 for sql_file in sql_files:
     sql_path = sql_dir / sql_file
     if sql_path.exists():
-        print(f"Executing {sql_file}...")
+        print(f"[EXECUTING] {sql_file}...")
         with open(sql_path, "r") as f:
             sql_content = f.read()
+        statements = split_sql_statements(sql_content)
+        failed = False
+        for i, stmt in enumerate(statements):
             try:
-                spark.sql(sql_content)
-                print(f"✓ {sql_file} executed successfully")
+                spark.sql(stmt)
             except Exception as e:
-                print(f"✗ {sql_file} failed: {e}")
+                print(f"[ERROR] {sql_file} failed (statement {i+1}): {e}")
+                failed = True
+                break
+        if not failed:
+            print(f"[OK] {sql_file} executed successfully ({len(statements)} statements)")
     else:
-        print(f"⚠ {sql_file} not found")
+        print(f"[NOT FOUND] {sql_file}")
 
 # COMMAND ----------
 
