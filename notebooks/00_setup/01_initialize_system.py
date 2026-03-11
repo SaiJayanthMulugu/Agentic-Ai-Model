@@ -14,22 +14,25 @@
 import os
 from pathlib import Path
 
-# Get SQL files directory - update MANUAL_SQL_DIR if auto-detect fails
+# Get SQL files directory - derive from notebook path for reliable detection
 try:
-    username = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
-    # Try Agentic-Ai-Model first (common repo name), then aiops-agentic-mas-platform
-    for repo in ["Agentic-Ai-Model", "aiops-agentic-mas-platform"]:
-        candidate = Path("/Workspace/Repos") / username / repo / "sql"
-        if candidate.exists():
-            sql_dir = candidate
-            break
+    notebook_path = dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
+    # notebook_path: /Workspace/Repos/user/repo-name/notebooks/00_setup/01_initialize_system
+    parts = [p for p in notebook_path.rstrip("/").split("/") if p]
+    if "Repos" in parts:
+        idx = parts.index("Repos")
+        repo_root = "/" + "/".join(parts[: idx + 3])  # /Workspace/Repos/user/repo-name
+        sql_dir = Path(repo_root) / "sql"
     else:
+        username = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
         sql_dir = Path("/Workspace/Repos") / username / "Agentic-Ai-Model" / "sql"
 except Exception:
-    sql_dir = Path("/Workspace/Repos/your-username/Agentic-Ai-Model/sql")  # Update if needed
+    sql_dir = Path("/Workspace/Repos/saijayanthmulugu@gmail.com/Agentic-Ai-Model/sql")
 
 print(f"Using SQL directory: {sql_dir}")
 print(f"SQL directory exists: {sql_dir.exists()}")
+if sql_dir.exists():
+    print(f"SQL files found: {list(sql_dir.glob('*.sql'))}")
 
 # SQL files in order
 sql_files = [
