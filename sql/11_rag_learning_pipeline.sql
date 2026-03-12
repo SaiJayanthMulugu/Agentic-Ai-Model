@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS rag_training_history (
     status STRING NOT NULL,  -- training, completed, failed
     started_at TIMESTAMP NOT NULL,
     completed_at TIMESTAMP,
-    deployed BOOLEAN DEFAULT false,
+    deployed BOOLEAN,
     deployed_at TIMESTAMP,
     PRIMARY KEY (training_id)
 ) USING DELTA

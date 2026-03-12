@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS rag_user_feedback (
     is_helpful BOOLEAN,
     feedback_timestamp TIMESTAMP NOT NULL,
     feedback_date DATE GENERATED ALWAYS AS (CAST(feedback_timestamp AS DATE)),
-    processed BOOLEAN DEFAULT false,
+    processed BOOLEAN,
     processed_at TIMESTAMP,
     PRIMARY KEY (feedback_id)
 ) USING DELTA
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS rag_feedback_aggregation (
     negative_feedback_count INT,
     avg_rating FLOAT,
     high_quality_feedback_count INT,  -- Feedback with corrections or detailed text
-    retraining_triggered BOOLEAN DEFAULT false,
+    retraining_triggered BOOLEAN,
     PRIMARY KEY (aggregation_id)
 ) USING DELTA
 PARTITIONED BY (aggregation_date);

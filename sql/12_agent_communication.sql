@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS agent_event_subscriptions (
     agent_id STRING NOT NULL,
     event_type STRING NOT NULL,
     subscribed_at TIMESTAMP NOT NULL,
-    active BOOLEAN DEFAULT true,
+    active BOOLEAN,
     PRIMARY KEY (subscription_id)
 ) USING DELTA
 PARTITIONED BY (agent_id);

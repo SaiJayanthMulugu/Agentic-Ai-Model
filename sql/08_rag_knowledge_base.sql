@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS knowledge_base (
     title STRING,
     category STRING,
     quality_score FLOAT,
-    usage_count BIGINT DEFAULT 0,
+    usage_count BIGINT,
     status STRING NOT NULL,  -- active, archived, under_review, rejected
     sensitivity_level STRING NOT NULL,  -- public, internal, confidential
     created_at TIMESTAMP NOT NULL,
