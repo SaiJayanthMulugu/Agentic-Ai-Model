@@ -122,6 +122,38 @@ sample_docs = [
         "category": "best_practices",
         "quality_score": 0.85,
         "sensitivity_level": "public"
+    },
+    {
+        "doc_id": "doc_003",
+        "title": "Python Unit Testing with Pytest",
+        "content": "Use pytest for comprehensive testing. Write focused tests that cover edge cases and error conditions. Use fixtures for setup and teardown. Aim for at least 80% code coverage.",
+        "category": "best_practices",
+        "quality_score": 0.88,
+        "sensitivity_level": "public"
+    },
+    {
+        "doc_id": "doc_004",
+        "title": "Azure Security Guidelines",
+        "content": "Always use managed identities instead of service principals. Enable Azure RBAC for fine-grained access control. Use Azure Key Vault for secret management. Enable audit logging on all resources.",
+        "category": "security",
+        "quality_score": 0.92,
+        "sensitivity_level": "internal"
+    },
+    {
+        "doc_id": "doc_005",
+        "title": "Databricks Cluster Performance Tuning",
+        "content": "Configure auto-termination to reduce costs. Use instance pools for faster startup. Enable Photon for improved query performance. Monitor cluster metrics and adjust worker count based on workload.",
+        "category": "best_practices",
+        "quality_score": 0.87,
+        "sensitivity_level": "public"
+    },
+    {
+        "doc_id": "doc_006",
+        "title": "API Design Standards",
+        "content": "Use RESTful principles for API design. Return meaningful HTTP status codes. Include comprehensive error messages. Version your APIs. Document all endpoints with examples and expected payloads.",
+        "category": "best_practices",
+        "quality_score": 0.86,
+        "sensitivity_level": "internal"
     }
 ]
 
