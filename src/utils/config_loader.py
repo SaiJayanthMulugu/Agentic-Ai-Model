@@ -35,10 +35,48 @@ class ConfigLoader:
         Initialize ConfigLoader.
         
         Args:
-            config_dir: Directory containing configuration files
+            config_dir: Directory containing configuration files. Can be relative
+                to the current working directory or an absolute path. When the
+                path doesn't exist, the loader will attempt to locate a `config`
+                folder by walking upwards from the current working directory or
+                by leveraging Databricks notebook context (if available).
         """
+        # Accept both string and Path inputs
         self.config_dir = Path(config_dir)
+        # if the directory doesn't exist, try to locate it automatically
+        if not self.config_dir.exists():
+            candidate = self._find_config_directory(self.config_dir.name)
+            if candidate:
+                logger.info(f"Auto-detected config directory at {candidate}")
+                self.config_dir = candidate
         self._cache: Dict[str, Dict[str, Any]] = {}
+
+    def _find_config_directory(self, name: str) -> Optional[Path]:
+        """Attempt to locate a directory with the given name.
+
+        Searches upward from the current working directory and, when running in
+        a Databricks notebook, uses the notebook path to determine the repo
+        root. Returns the first match found or ``None`` if not located.
+        """
+        # walk up from cwd
+        cwd = Path.cwd()
+        for parent in [cwd] + list(cwd.parents):
+            candidate = parent / name
+            if candidate.exists():
+                return candidate.resolve()
+        # special handling for Databricks Repos path
+        try:
+            notebook_path = dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
+            parts = [p for p in notebook_path.rstrip("/").split("/") if p]
+            if "Repos" in parts:
+                idx = parts.index("Repos")
+                repo_root = Path("/") / Path("/".join(parts[: idx + 3]))
+                candidate = repo_root / name
+                if candidate.exists():
+                    return candidate.resolve()
+        except Exception:
+            pass
+        return None
     
     def load(self, config_path: str, environment: Optional[str] = None) -> Dict[str, Any]:
         """
